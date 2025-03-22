@@ -1,3 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def rouwenhorst(n, p, q):
+    """
+    Constructs the transition matrix using Rouwenhorst's method.
+    
+    n: Number of states
+    p, q: Persistence parameters
+    """
+    if n == 2:
+        return np.array([[p, 1 - p], [1 - q, q]])
+
+    Pn_1 = rouwenhorst(n - 1, p, q)  # Recursive call for (n-1)
+    
+    # Expanding the transition matrix
+    P = np.zeros((n, n))
+    P[:-1, :-1] += p * Pn_1
+    P[:-1, 1:] += (1 - p) * Pn_1
+    P[1:, :-1] += (1 - q) * Pn_1
+    P[1:, 1:] += q * Pn_1
+    
+    return P / np.sum(P, axis=1, keepdims=True)
 def compute_state_vector(n, gamma, sigma):
     """
     Computes the state vector for the Markov Chain approximation.
